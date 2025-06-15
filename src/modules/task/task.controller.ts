@@ -24,8 +24,8 @@ import { FindAllTaskResponse, TaskFilterParams } from './dtos/find-all-task.dto'
 import { UpdateTaskDto } from './dtos/update-task.dto';
 import { Task } from './entity/task.entity';
 import { TaskService } from './task.service';
-import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
 import { Roles } from '@/common/decorators/roles/roles.decorator';
+import { Role } from '../user/enums/role.enum';
 
 const route = '/tasks';
 const routeId = '/tasks/:id';
@@ -54,7 +54,7 @@ export class TaskController {
   async findAll(@Query() params: TaskFilterParams, @UserFromRequest() user: RequestUser) {
     return this.taskService.findAll({
       ...params,
-      user_id: user.id,
+      user_id: user.role === Role.ADMIN ? params.user_id : user.id,
     });
   }
 
